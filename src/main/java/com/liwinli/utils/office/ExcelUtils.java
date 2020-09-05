@@ -19,9 +19,9 @@ public class ExcelUtils extends Logable {
     private List<String> columnNameList = new ArrayList<String>();
 
     private List<Map<String, String>> mExcelData = new ArrayList<Map<String, String>>();
-    public  void read() throws IOException {
-        String excelFilePath = "/Volumes/Macintosh HD 1/统计需求/data/旗舰店（6月1日-30日）.xlsx";
-        File aliOrderFile = new File(excelFilePath);
+    public  void parse(File aliOrderFile) throws IOException {
+//        String excelFilePath = "/Volumes/Macintosh HD 1/统计需求/data/旗舰店（6月1日-30日）.xlsx";
+//        File aliOrderFile = new File(excelFilePath);
         String fileName = aliOrderFile.getName();
         EnumECommerceOrder.BrushShopping brushShopping = EnumECommerceOrder.BrushShopping.NULL_BS;
         if (fileName.trim().contains(EnumECommerceOrder.BrushShopping.TAOBAO.getName().substring(0, 2))) {
@@ -32,7 +32,7 @@ public class ExcelUtils extends Logable {
             brushShopping = EnumECommerceOrder.BrushShopping.ZHUANYING;
         }
 
-        FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
+        FileInputStream inputStream = new FileInputStream(aliOrderFile);
 
         Workbook workbook = new XSSFWorkbook(inputStream);
         int workBookNum = workbook.getNumberOfSheets();

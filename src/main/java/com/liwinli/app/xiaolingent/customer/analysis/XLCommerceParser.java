@@ -12,18 +12,21 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.util.List;
 
+import static java.awt.SystemColor.info;
+
 public class XLCommerceParser extends Logable {
 
     private static XLCommerceParser self = new XLCommerceParser();
     public static void main(String[] args) {
         System.out.println("+++++++++++++++++ This is the XLCommerceParser ++++++++++++++++++++++");
 
-        String parserPath = "/Volumes/Macintosh HD 1/统计需求/data";
+        String parserPath = "/Users/lingke/Documents/xl_commerces";
         List<File> fileList = LTFile.getFilesIn(parserPath);
 
         for (File f : fileList) {
             String fileName = f.getName();
             if (fileName.trim().contains(Constants.CITY_LEVEL_FILE_KEYWORD)) {
+                self.info("城市等级的Excel文件必须包含关键字: {}", Constants.CITY_LEVEL_FILE_KEYWORD);
                 try {
                     CityLevelHandler cityLevelHandler = new CityLevelHandler();
                     cityLevelHandler.parse(f);
@@ -36,6 +39,7 @@ public class XLCommerceParser extends Logable {
         for (File f : fileList) {
             String fileName = f.getName();
             if (fileName.trim().contains(Constants.BRUSH_FILE_KEYWORD)) {
+                self.info("阿里系刷单文件必须包含: {}", Constants.BRUSH_FILE_KEYWORD);
                 try {
                     BrushOrderHandler brushOrderHandler = new BrushOrderHandler();
                     brushOrderHandler.parse(f);
@@ -71,7 +75,7 @@ public class XLCommerceParser extends Logable {
 
             try {
                 ExcelUtils excelUtils = new ExcelUtils();
-                excelUtils.read();
+                excelUtils.parse(f);
             } catch (Exception e) {
                 System.out.println(e);
             }

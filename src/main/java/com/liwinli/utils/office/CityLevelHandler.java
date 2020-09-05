@@ -22,17 +22,14 @@ public class CityLevelHandler extends Logable {
     private static List<LTCityLevelModel> ltCityLevelModels = new ArrayList<LTCityLevelModel>();
 
     public void parse(File excelFile) throws IOException {
-        info("Parse citylevel file: {}", excelFile.getName());
+        info("正在分析城市等级文件: {}", excelFile.getName());
         FileInputStream inputStream = new FileInputStream(excelFile);
         Workbook workbook = new XSSFWorkbook(inputStream);
         int sheetNum = workbook.getNumberOfSheets();
-        info("WorkBook sheet number: {}", sheetNum);
         for (int i = 0; i < sheetNum; ++i) {
             String sheetName = workbook.getSheetName(i);
-            info("Sheet[{}] name: {}", i, sheetName);
-            if (!sheetName.trim().equals(Constants.CITY_LEVEL_SHEET_KEYWORD)) {
-                continue;
-            }
+            if (!sheetName.trim().equals(Constants.CITY_LEVEL_SHEET_KEYWORD)) { continue;
+            } else { info("城市等级的表名必须包含: {}", Constants.CITY_LEVEL_SHEET_KEYWORD); }
 
             columnNameList = new ArrayList<String>();
             Sheet curSheet = workbook.getSheetAt(i);

@@ -75,9 +75,9 @@ public class BrushOrderHandler extends Logable {
                                 if (cellIndex < columnNameList.size()) {
                                     String columnName = columnNameList.get(cellIndex);
                                     if (columnName.trim().equals(Constants.ALI_BRUSH_ORDER_COLUMNS[1])) {
-                                        info("接单时间： {}", cellValue);
+//                                        info("接单时间： {}", cellValue);
                                     } else if (columnName.trim().equals("淘宝订单编号")) {
-                                        info("订单: {}", cellValue);
+//                                        info("订单: {}", cellValue);
                                     }
 
                                     rowMap.put(columnName, cellValue);
