@@ -1,5 +1,6 @@
 package com.liwinli.utils.log;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,8 @@ public abstract class Logable {
 
     public void info(String str, Object... params) {
         log.info(str + " - " + Thread.currentThread().getName(), params);
+        log.debug(str + " - " + Thread.currentThread().getName(), params);
+        log.error(str + " - " + Thread.currentThread().getName(), params);
     }
 
     public void info(StringBuilder sb) {

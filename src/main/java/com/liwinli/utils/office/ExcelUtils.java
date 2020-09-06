@@ -5,6 +5,7 @@ import com.liwinli.app.xiaolingent.customer.analysis.enums.EnumECommerceOrder;
 import com.liwinli.app.xiaolingent.customer.analysis.model.AliBrushOrderModel;
 import com.liwinli.utils.log.Logable;
 import com.liwinli.utils.time.LTTimeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
+@Slf4j
 public class ExcelUtils extends Logable {
 
     private List<String> columnNameList = new ArrayList<String>();
@@ -78,7 +80,7 @@ public class ExcelUtils extends Logable {
                             if (cellIndex < columnNameList.size()) {
                                 String columnName = columnNameList.get(cellIndex);
                                 if (columnName.trim().equals("收货地址")) {
-                                    info("收货地址： {}", cellValue);
+//                                    info("收货地址： {}", cellValue);
                                     String[] addressArray = cellValue.split(" ");
                                     int arraySize = addressArray.length;
                                 }
@@ -134,12 +136,7 @@ public class ExcelUtils extends Logable {
             }
 
             if (!isBrushOrder) { mExcelData.add(rowMap); }
-
-//            System.out.println();
-            if (0 == rowIndex) {
-                info("该Excel 列为： {}", columnNameList);
-            }
-
+            if (0 == rowIndex) { info("该Excel 列为： {}", columnNameList); }
             ++rowIndex;
         }
 

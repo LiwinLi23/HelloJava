@@ -7,6 +7,7 @@ import com.liwinli.utils.log.Logable;
 import com.liwinli.utils.office.BrushOrderHandler;
 import com.liwinli.utils.office.CityLevelHandler;
 import com.liwinli.utils.office.ExcelUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -14,13 +15,14 @@ import java.util.List;
 
 import static java.awt.SystemColor.info;
 
+@Slf4j
 public class XLCommerceParser extends Logable {
 
     private static XLCommerceParser self = new XLCommerceParser();
     public static void main(String[] args) {
-        System.out.println("+++++++++++++++++ This is the XLCommerceParser ++++++++++++++++++++++");
-
-        String parserPath = "/Users/lingke/Documents/xl_commerces";
+//        System.out.println("+++++++++++++++++ This is the XLCommerceParser ++++++++++++++++++++++");
+        log.info("+++++++++++++++++ This is the XLCommerceParser ++++++++++++++++++++++");
+        String parserPath = "/Volumes/KINGSTON/用户画像需求";
         List<File> fileList = LTFile.getFilesIn(parserPath);
 
         for (File f : fileList) {
