@@ -1,8 +1,11 @@
 package com.liwinli.utils.office;
 
 import com.liwinli.app.xiaolingent.customer.analysis.constant.Constants;
+import com.liwinli.app.xiaolingent.customer.analysis.enums.EnumDataChannel;
 import com.liwinli.app.xiaolingent.customer.analysis.enums.EnumECommerceOrder;
 import com.liwinli.app.xiaolingent.customer.analysis.model.AliBrushOrderModel;
+import com.liwinli.app.xiaolingent.customer.analysis.model.LTCityLevelModel;
+import com.liwinli.app.xiaolingent.customer.analysis.model.PurchasedCustomerModel;
 import com.liwinli.utils.log.Logable;
 import com.liwinli.utils.time.LTTimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,17 +24,22 @@ public class ExcelUtils extends Logable {
     private List<String> columnNameList = new ArrayList<String>();
 
     private List<Map<String, String>> mExcelData = new ArrayList<Map<String, String>>();
+    private List<PurchasedCustomerModel> purchasedCustomerModelList = new ArrayList<>();
     public  void parse(File aliOrderFile) throws IOException {
 //        String excelFilePath = "/Volumes/Macintosh HD 1/统计需求/data/旗舰店（6月1日-30日）.xlsx";
 //        File aliOrderFile = new File(excelFilePath);
+        EnumDataChannel.Platform platform = null;
         String fileName = aliOrderFile.getName();
         EnumECommerceOrder.BrushShopping brushShopping = EnumECommerceOrder.BrushShopping.NULL_BS;
         if (fileName.trim().contains(EnumECommerceOrder.BrushShopping.TAOBAO.getName().substring(0, 2))) {
             brushShopping = EnumECommerceOrder.BrushShopping.TAOBAO;
+            platform = EnumDataChannel.Platform.TAOBAO;
         } else if (fileName.trim().contains(EnumECommerceOrder.BrushShopping.QIJIAN.getName().substring(0, 2))) {
             brushShopping = EnumECommerceOrder.BrushShopping.QIJIAN;
+            platform = EnumDataChannel.Platform.TIANMAO;
         } else if (fileName.trim().contains(EnumECommerceOrder.BrushShopping.ZHUANYING.getName().substring(0, 2))) {
             brushShopping = EnumECommerceOrder.BrushShopping.ZHUANYING;
+            platform = EnumDataChannel.Platform.TIANMAO;
         }
 
         FileInputStream inputStream = new FileInputStream(aliOrderFile);
@@ -47,11 +55,13 @@ public class ExcelUtils extends Logable {
         int rowIndex = 0;
         Iterator<Row> rowIterator = firstSheet.iterator();
         while (rowIterator.hasNext()) {
+            PurchasedCustomerModel purchasedCustomerModel = new PurchasedCustomerModel();
             Map<String, String> rowMap = new HashMap<String, String>();
             Row nextRow = rowIterator.next();
             Iterator<Cell> cellIterator = nextRow.cellIterator();
             int cellIndex = 0;
             while (cellIterator.hasNext()) {
+//                warn("Column[{}] name: {}", cellIndex, Constants.ALITableColumns[cellIndex]);
                 Cell cell = cellIterator.next();
                 switch (cell.getCellType()) {
                     case STRING:
@@ -70,6 +80,7 @@ public class ExcelUtils extends Logable {
                         }
 
 //                        String cellKey = Constants.ALITableColumns[cellIndex];
+                        cellValue = cellValue.trim();
                         if (0 == rowIndex) {
                             if (Arrays.asList(Constants.ALITableColumns).contains(cellValue)) {
                                 columnNameList.add(cellValue);
@@ -80,9 +91,14 @@ public class ExcelUtils extends Logable {
                             if (cellIndex < columnNameList.size()) {
                                 String columnName = columnNameList.get(cellIndex);
                                 if (columnName.trim().equals("收货地址")) {
-//                                    info("收货地址： {}", cellValue);
                                     String[] addressArray = cellValue.split(" ");
-                                    int arraySize = addressArray.length;
+                                    if (addressArray.length <= 2) {
+                                        rowMap.put("xl_province", "未知"); rowMap.put("xl_city", "未知");
+                                        rowMap.put("xl_area", "未知");
+                                    } else {
+                                        rowMap.put("xl_province", addressArray[0]); rowMap.put("xl_city", addressArray[1]);
+                                        rowMap.put("xl_area", addressArray[2]);
+                                    }
                                 }
 
                                 rowMap.put(columnName, cellValue);
@@ -129,18 +145,56 @@ public class ExcelUtils extends Logable {
                     for (String brushOrder : brushList) {
                         if (brushOrder.equalsIgnoreCase(rowOrderSN)) {
                             isBrushOrder = true;
-                            info("RowIndex: {} SN:{} is brush", rowIndex, rowOrderSN);
                         }
                     }
                 }
             }
 
-            if (!isBrushOrder) { mExcelData.add(rowMap); }
-            if (0 == rowIndex) { info("该Excel 列为： {}", columnNameList); }
+            if (0 != rowIndex && !isBrushOrder) {
+                purchasedCustomerModel.platform = platform;
+                purchasedCustomerModel.shoppingName = brushShopping.getName();
+                purchasedCustomerModel.orderNumer = rowMap.get("订单编号");
+                purchasedCustomerModel.orderType = EnumECommerceOrder.Type.NORMAL;
+                purchasedCustomerModel.orderStatus = EnumECommerceOrder.Status.valueOf(rowMap.get("订单状态").trim());
+                purchasedCustomerModel.orderCreateTime = LTTimeUtil.getDate(rowMap.get("订单付款时间"));
+                purchasedCustomerModel.receiverName = rowMap.get("收货人姓名");
+                purchasedCustomerModel.phone = rowMap.get("联系电话");
+                purchasedCustomerModel.mobilePhone = rowMap.get("联系手机");
+                purchasedCustomerModel.province = rowMap.get("xl_province");
+                purchasedCustomerModel.city = rowMap.get("xl_city");
+                purchasedCustomerModel.area = rowMap.get("xl_area");
+                purchasedCustomerModel.detailAddr = rowMap.get("收货地址");
+                purchasedCustomerModel.totalPrice = Float.parseFloat(rowMap.get("买家实际支付金额"));
+                purchasedCustomerModel.refundStatus = rowMap.get("订单关闭原因");
+                purchasedCustomerModel.refundAmount = Float.parseFloat(rowMap.get("退款金额"));
+                purchasedCustomerModel.goodsTitle = rowMap.get("宝贝标题");
+                purchasedCustomerModel.categoryId = Integer.parseInt(rowMap.get("宝贝种类"));
+
+                double cityLevel = -1;
+                for (LTCityLevelModel item : CityLevelHandler.ltCityLevelModels) {
+                    if (item.province.contains(purchasedCustomerModel.province) && item.city.contains(purchasedCustomerModel.city) &&
+                        item.district.contains(purchasedCustomerModel.area.equalsIgnoreCase("null") ? "" : purchasedCustomerModel.area)) {
+                        cityLevel = item.cityLevel;
+                        break;
+                    }
+                }
+
+                if (cityLevel >= 1) {
+                    purchasedCustomerModel.cityLevel = cityLevel;
+                } else {
+                    info("{}, {}, {} can't find in 区域地图", purchasedCustomerModel.province, purchasedCustomerModel.city, purchasedCustomerModel.area);
+                    purchasedCustomerModel.cityLevel = cityLevel;
+                }
+
+                purchasedCustomerModelList.add(purchasedCustomerModel);
+            }
+
             ++rowIndex;
         }
 
         workbook.close();
         inputStream.close();
     }
+
+    public List<PurchasedCustomerModel> getPurchasedCustomerModelList() { return purchasedCustomerModelList; }
 }

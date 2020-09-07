@@ -19,7 +19,7 @@ import java.util.*;
 
 public class CityLevelHandler extends Logable {
     private List<String> columnNameList = new ArrayList<String>();
-    private static List<LTCityLevelModel> ltCityLevelModels = new ArrayList<LTCityLevelModel>();
+    public static List<LTCityLevelModel> ltCityLevelModels = new ArrayList<LTCityLevelModel>();
 
     public void parse(File excelFile) throws IOException {
         info("正在分析城市等级文件: {}", excelFile.getName());

@@ -20,7 +20,7 @@ public class TaoBaoPurchasedModel {
     private String area;
     private String detailAddr;
     private float  totalPrice;
-    private EnumECommerceOrder.RefundStatus refundStatus;
+    private String refundStatus;
     private float refundAmount;
     private String goodsTitle;
     private int categoryId;

@@ -30,4 +30,15 @@ public class LTTimeUtil {
 
         return map;
     }
+
+    public static Date getDate(String dateStr) {
+        Date date = null;
+        try {
+            date = sDateFormat.parse(dateStr);
+        } catch (Exception e) {
+            ;
+        }
+
+        return date;
+    }
 }
