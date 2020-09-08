@@ -6,12 +6,12 @@ import com.liwinli.app.xiaolingent.customer.analysis.enums.EnumECommerceOrder;
 import java.util.Date;
 
 public class PurchasedCustomerModel {
-    public EnumDataChannel.Platform platform;                  // 需要扩展
-    public Object shoppingName;
+    public String platform;                  // 需要扩展
+    public String shoppingName;
     public String orderNumer;
-    public EnumECommerceOrder.Type orderType;
-    public EnumECommerceOrder.Status orderStatus;
-    public Date orderCreateTime;
+    public String orderType;
+    public String orderStatus;
+    public String orderCreateTime;
     public String receiverName;
     public String phone;                                       // 需要扩展
     public String mobilePhone;

@@ -8,6 +8,7 @@ import com.liwinli.utils.log.Logable;
 import com.liwinli.utils.office.BrushOrderHandler;
 import com.liwinli.utils.office.CityLevelHandler;
 import com.liwinli.utils.office.ExcelUtils;
+import com.liwinli.utils.office.WSCHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -15,6 +16,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -85,75 +87,91 @@ public class XLCommerceParser extends Logable {
                 continue;
             }
 
-            try {
-                ExcelUtils excelUtils = new ExcelUtils();
-                excelUtils.parse(f);
-                totoalPurchasedCustomerModelList.addAll(excelUtils.getPurchasedCustomerModelList());
-            } catch (Exception e) {
-                System.out.println(e);
+            if (isAlyFile) {
+                try {
+                    ExcelUtils excelUtils = new ExcelUtils();
+                    excelUtils.parse(f);
+                    totoalPurchasedCustomerModelList.addAll(excelUtils.getPurchasedCustomerModelList());
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            } else {
+                try {
+                    WSCHandler wscHandler = new WSCHandler();
+                    wscHandler.parse(f);
+                    totoalPurchasedCustomerModelList.addAll(wscHandler.getPurchasedCustomerModelList());
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
             }
+
         }
 
         try {
             //路径需要存在
-            Workbook wb = new HSSFWorkbook();
+//            Workbook wb = new HSSFWorkbook();         // Excel2003， 有65535行限制
+            Workbook wb = new XSSFWorkbook();           // Excel2007， 暂无行号限制
+
             //创建 Sheet页
             Sheet sheetA = wb.createSheet("output");
             for(int i = 0; i < totoalPurchasedCustomerModelList.size(); ++i) {
                 PurchasedCustomerModel model = totoalPurchasedCustomerModelList.get(i);
                 Row row = sheetA.createRow(i);
-                for(int j = 0; j < 17; ++j){
+                for(int j = 0; j < 18; ++j){
                     Cell cell = row.createCell(j);
                     switch (j) {
                         case 0:
-                            cell.setCellValue(model.shoppingName.toString());
+                            cell.setCellValue(model.platform);
                             break;
                         case 1:
-                            cell.setCellValue(model.orderNumer);
+                            cell.setCellValue(model.shoppingName.toString());
                             break;
                         case 2:
-                            cell.setCellValue(model.orderType.toString());
+                            cell.setCellValue(model.orderNumer);
                             break;
                         case 3:
-                            cell.setCellValue(model.orderStatus.toString());
+                            cell.setCellValue(model.orderType.toString());
                             break;
                         case 4:
-//                            cell.setCellValue(model.orderCreateTime.toString());
+                            cell.setCellValue(model.orderStatus.toString());
                             break;
                         case 5:
-                            cell.setCellValue(model.receiverName);
+                            cell.setCellValue(model.orderCreateTime.toString());
                             break;
                         case 6:
-                            cell.setCellValue(model.mobilePhone);
+                            cell.setCellValue(model.receiverName);
                             break;
                         case 7:
-                            cell.setCellValue(model.province);
+                            cell.setCellValue(model.mobilePhone);
                             break;
                         case 8:
-                            cell.setCellValue(model.city);
+                            cell.setCellValue(model.province);
                             break;
                         case 9:
-                            cell.setCellValue(model.area);
+                            cell.setCellValue(model.city);
                             break;
                         case 10:
-                            cell.setCellValue(model.cityLevel);
+                            cell.setCellValue(model.area);
                             break;
                         case 11:
-                            cell.setCellValue(model.detailAddr);
+                            cell.setCellValue(model.cityLevel);
                             break;
                         case 12:
-                            cell.setCellValue(model.totalPrice);
+                            cell.setCellValue(model.detailAddr);
                             break;
                         case 13:
-                            cell.setCellValue(model.refundStatus);
+                            cell.setCellValue(model.totalPrice);
                             break;
                         case 14:
-                            cell.setCellValue(model.refundAmount);
+                            cell.setCellValue(model.refundStatus);
                             break;
                         case 15:
-                            cell.setCellValue(model.goodsTitle);
+                            cell.setCellValue(model.refundAmount);
                             break;
                         case 16:
+                            cell.setCellValue(model.goodsTitle);
+                            break;
+                        case 17:
                             cell.setCellValue(model.categoryId);
                             break;
                         default:
@@ -161,7 +179,7 @@ public class XLCommerceParser extends Logable {
                     // cell.setCellValue((j+1)+" * "+(i+1)+" = " + (j+1)*(i+1));
                 }
             }
-            FileOutputStream fos = new FileOutputStream(parserPath + "/省月用户数据.xlsx");
+            FileOutputStream fos = new FileOutputStream(parserPath + "/target/省月用户数据.xlsx");
             wb.write(fos);
             fos.close();
             wb.close();

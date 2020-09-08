@@ -2,12 +2,17 @@ package com.liwinli.app.xiaolingent.customer.analysis.enums;
 
 public class EnumECommerceOrder {
     public enum Type {
-        NORMAL,                         // 普通订单
-        GROUP_BOOKING;                  // 拼团
+        NORMAL("普通订单"),
+        GROUP_BOOKING("拼团");
+
+        private String mType;
+        private Type(String t) { mType = t; }
+        public String getType() { return mType; }
     }
 
     public enum Status {
-        准备发货("准备发货"), 交易关闭("交易关闭"), 已发货("已发货"), 交易成功("交易成功");
+        WAIT_SEND("待发货"), PREPARE_SEND("准备发货"), CLOSED("交易关闭"), SENDED("已发货"), SENDED_AND_WAITING_CONFIRM("卖家已发货，等待买家确认"),
+        SUCCESS("交易成功"), FINISHED("交易完成");
 
         private String mStatus;
         private Status(String status) { mStatus = status; }

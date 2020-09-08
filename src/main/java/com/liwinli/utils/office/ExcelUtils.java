@@ -30,6 +30,7 @@ public class ExcelUtils extends Logable {
 //        File aliOrderFile = new File(excelFilePath);
         EnumDataChannel.Platform platform = null;
         String fileName = aliOrderFile.getName();
+        warn("正在分析阿里系数据文件： {}", fileName);
         EnumECommerceOrder.BrushShopping brushShopping = EnumECommerceOrder.BrushShopping.NULL_BS;
         if (fileName.trim().contains(EnumECommerceOrder.BrushShopping.TAOBAO.getName().substring(0, 2))) {
             brushShopping = EnumECommerceOrder.BrushShopping.TAOBAO;
@@ -151,12 +152,12 @@ public class ExcelUtils extends Logable {
             }
 
             if (0 != rowIndex && !isBrushOrder) {
-                purchasedCustomerModel.platform = platform;
-                purchasedCustomerModel.shoppingName = brushShopping.getName();
+                purchasedCustomerModel.platform = platform.getName();
+                purchasedCustomerModel.shoppingName = rowMap.get("店铺名称");
                 purchasedCustomerModel.orderNumer = rowMap.get("订单编号");
-                purchasedCustomerModel.orderType = EnumECommerceOrder.Type.NORMAL;
-                purchasedCustomerModel.orderStatus = EnumECommerceOrder.Status.valueOf(rowMap.get("订单状态").trim());
-                purchasedCustomerModel.orderCreateTime = LTTimeUtil.getDate(rowMap.get("订单付款时间"));
+                purchasedCustomerModel.orderType = EnumECommerceOrder.Type.NORMAL.getType();
+                purchasedCustomerModel.orderStatus = rowMap.get("订单状态").trim();
+                purchasedCustomerModel.orderCreateTime = orderTime;
                 purchasedCustomerModel.receiverName = rowMap.get("收货人姓名");
                 purchasedCustomerModel.phone = rowMap.get("联系电话");
                 purchasedCustomerModel.mobilePhone = rowMap.get("联系手机");
