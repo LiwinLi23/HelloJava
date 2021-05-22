@@ -6,6 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 public class Main {
     public static void main(String[] args) {
         System.out.println("+++++++++++++++++ This is a java program ++++++++++++++++++++++");
-        LTFile.listPath("/Volumes/KINGSTON/image");
+//        LTFile.listPath("/Volumes/KINGSTON/image");
     }
 }
