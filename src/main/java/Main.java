@@ -9,6 +9,6 @@ public class Main {
 //        LTFile.listPath("/Volumes/KINGSTON/image");
 //        ParentClass p = new ParentClass();
         System.out.println("---------------------------------------------------------------");
-        SubClass s = new SubClass();
+//        SubClass s = new SubClass();
     }
 }
