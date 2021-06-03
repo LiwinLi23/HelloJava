@@ -12,7 +12,9 @@ public class LTTimeUtil {
 
     public static Map<String, Integer> getYMD(String string) {
         Map<String, Integer> map = new HashMap<String, Integer>();
-        if (StringUtils.isBlank(string)) { return map; }
+        if (StringUtils.isBlank(string)) {
+            return map;
+        }
 
         Date date = null;
         try {
@@ -24,7 +26,7 @@ public class LTTimeUtil {
         if (null != date) {
             int year = date.getYear() + 1900;
             int month = date.getMonth() + 1;
-            map.put("year",  Integer.valueOf(year));
+            map.put("year", Integer.valueOf(year));
             map.put("month", Integer.valueOf(month));
         }
 

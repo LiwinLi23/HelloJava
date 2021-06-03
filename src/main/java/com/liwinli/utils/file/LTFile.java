@@ -20,10 +20,12 @@ public class LTFile {
 //        String path = "/Volumes/Macintosh HD 1/统计需求/data";
         File file = new File(curPath);
         File[] fs = file.listFiles();
-        if (null == fs) { return; }
+        if (null == fs) {
+            return;
+        }
 
-        for(File f : fs) {
-            if(f.isDirectory()) {
+        for (File f : fs) {
+            if (f.isDirectory()) {
                 listPath(f.getAbsolutePath());
             } else {
                 String fileName = f.getName();
@@ -40,12 +42,14 @@ public class LTFile {
 
     public static List<File> getFilesIn(String curPath) {
         List<File> fileList = new ArrayList();
-        if (null == curPath || curPath.length() <= 1) { return fileList; }
+        if (null == curPath || curPath.length() <= 1) {
+            return fileList;
+        }
 
         File file = new File(curPath);
         File[] fs = file.listFiles();
-        for(File f : fs) {
-            if(!f.isDirectory()) {
+        for (File f : fs) {
+            if (!f.isDirectory()) {
                 fileList.add(f);
             }
         }
