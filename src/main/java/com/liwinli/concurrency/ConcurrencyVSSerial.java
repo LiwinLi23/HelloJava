@@ -31,6 +31,13 @@ public class ConcurrencyVSSerial {
         System.out.println("SerialTest duration: " + durationTime);
     }
 
+    /*
+    *   ConcurrencyVSSerial.test(10000);
+        ConcurrencyVSSerial.test(100000);
+        ConcurrencyVSSerial.test(1000000);
+        ConcurrencyVSSerial.test(10000000);
+        ConcurrencyVSSerial.test(100000000);
+    * */
     public static void test(long countParam) throws InterruptedException {
         sCount = countParam;
         concurrencyTest();
