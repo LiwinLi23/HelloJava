@@ -22,8 +22,11 @@ public class ReentrantLockDemo {
     }
 
     private static void count() {
-        reentrantLock.lock();
-        for (int i = 0; i < 1000; ++i) { ++value; }
-        reentrantLock.unlock();
+        try {
+            reentrantLock.lock();
+            for (int i = 0; i < 1000; ++i) { ++value; }
+        } finally {
+            reentrantLock.unlock();
+        }
     }
 }
