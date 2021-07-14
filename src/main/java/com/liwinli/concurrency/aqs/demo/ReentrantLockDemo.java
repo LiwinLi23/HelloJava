@@ -1,7 +1,5 @@
 package com.liwinli.concurrency.aqs.demo;
 
-import org.apache.poi.ss.formula.functions.T;
-
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ReentrantLockDemo {
